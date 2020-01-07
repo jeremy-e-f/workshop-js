@@ -1,5 +1,5 @@
 function actualiserTableau(){
-    var container= $("#listeUsers tbody");
+    var container= "#listeUsers tbody";
 
     fetch('https://loisirs-web-backend.cleverapps.io/users', {
         method: 'GET'
@@ -12,17 +12,19 @@ function actualiserTableau(){
     }).then(function(responseAsJson) {
         // traitement de l'objet
         console.log(responseAsJson);
-        var listeUsers= responseAsJson;
-        $(container).html("");
-        listeUsers.forEach(
-            function(element){
-                var ligne= "<tr>"+
-                        "<td>"+element.id+"</td>"+
-                        "<td>"+element.name+"</td>"+
-                        "<td>"+element.password+"</td>"+
+        
+        document.querySelector(container).innerHTML = "";
+        var listeUsers= responseAsJson.filter(function(user){
+            return this.name!= undefined;
+        }).map(function(user){
+            var ligne= "<tr>"+
+                        "<td>"+user.id+"</td>"+
+                        "<td>"+user.name+"</td>"+
+                        "<td>"+user.password+"</td>"+
                     "</tr>";
-                $(container).append(ligne)
-            });
+            return ligne;
+        }).join('');
+        document.querySelector(container).innerHTML = listeUsers;
     }).catch(function(error) {
         console.log('Une erreur est survenue : ', error);
     });
